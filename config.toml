@@ -1,0 +1,11 @@
+symbol = "ethbtc"
+max_aggregated_levels = 10
+
+[binance]
+url = "wss://stream.binance.com:9443"
+depth = "D10"
+interval = "I100"
+
+[bitstamp]
+url = "wss://ws.bitstamp.net"
+depth = 10
