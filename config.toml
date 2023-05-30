@@ -1,5 +1,6 @@
 symbol = "ethbtc"
 max_aggregated_levels = 10
+channel_size = 5
 
 [binance]
 url = "wss://stream.binance.com:9443"
@@ -9,3 +10,8 @@ interval = "I100"
 [bitstamp]
 url = "wss://ws.bitstamp.net"
 depth = 10
+
+[backoff]
+retries = 5
+min = "100ms"
+max = "10s"

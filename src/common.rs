@@ -12,7 +12,7 @@ pub(crate) struct OrderBookData {
     pub asks: Vec<Level>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Ord, PartialOrd, PartialEq, Eq)]
 #[serde(rename_all = "camelCase", try_from = "(String, String)")]
 pub(crate) struct Level {
     pub price: NotNan<f64>,
@@ -51,6 +51,11 @@ impl OrderBookData {
                 .collect(),
             exchange_name,
         }
+    }
+
+    pub fn sort(&mut self) {
+        self.asks.sort_unstable();
+        self.bids.sort_unstable_by(|a, b| b.cmp(a));
     }
 }
 

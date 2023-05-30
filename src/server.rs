@@ -1,7 +1,7 @@
 use std::net::ToSocketAddrs;
 use std::pin::Pin;
 
-use crate::orderbook;
+use crate::{configuration, orderbook};
 use async_trait::async_trait;
 use futures::{stream, Stream, StreamExt};
 use tokio::sync::watch::Receiver;
@@ -12,12 +12,18 @@ use tonic::Status;
 pub async fn grpc_server(
     ticks: Receiver<orderbook::Summary>,
     stop_signal: CancellationToken,
+    server_config: configuration::Server,
 ) -> anyhow::Result<()> {
     let server = OrderBookAggregatorService { ticks };
+    let port = server_config.port;
     Server::builder()
         .add_service(orderbook::orderbook_aggregator_server::OrderbookAggregatorServer::new(server))
         .serve_with_shutdown(
-            "[::1]:50051".to_socket_addrs().unwrap().next().unwrap(),
+            format!("[::1]:{port}")
+                .to_socket_addrs()
+                .unwrap()
+                .next()
+                .unwrap(),
             stop_signal.cancelled(),
         )
         .await?;

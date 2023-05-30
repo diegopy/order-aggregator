@@ -13,7 +13,7 @@ pub(crate) async fn bitstamp_stream(
     symbol: String,
     orders_sender: Sender<ExchangeOrders>,
 ) -> anyhow::Result<()> {
-    let (bitstamp_ws, _) = tokio_tungstenite::connect_async(config.url)
+    let (bitstamp_ws, _) = tokio_tungstenite::connect_async(&config.url)
         .await
         .context("connecting to ws")?;
     let (mut bitstamp_writer, mut bitstamp_reader) = bitstamp_ws.split();

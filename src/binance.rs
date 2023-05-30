@@ -27,8 +27,11 @@ pub(crate) async fn binance_stream(
     while let Some(read_result) = binance_reader.next().await {
         match read_result.context("reading packet")? {
             Message::Text(message_text) => {
-                let order_book: OrderBookData = serde_json::from_str(&message_text)
+                let mut order_book: OrderBookData = serde_json::from_str(&message_text)
                     .with_context(|| format!("parsing message: {message_text}"))?;
+                if config.sort {
+                    order_book.sort();
+                }
                 let send_result = orders_sender
                     .send(order_book.into_exchange_orders("binance".to_owned(), max_levels.into()))
                     .await;
